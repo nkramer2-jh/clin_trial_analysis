@@ -28,8 +28,7 @@ bp_values <- numeric(nrow(data))  # Preallocate vector of correct length
 bp_values[data$group_id == FALSE] <- placebo_bp #Assigns placebo bp values to bp_values based on corresponding location in dataframe
 bp_values[data$group_id == TRUE] <- drug_bp #Assigns drug bp values to bp_values based on corresponding location in dataframe
 
-# Add to the dataframe
-data$bp_change <- bp_values
+data$bp_change <- bp_values #Add to the dataframe
 
 head(data)
 
@@ -48,8 +47,8 @@ t_result <- t.test(bp_change ~ group_id, data = data) #test if bp difference is 
 show(t_result) #display t-test results
 
 #Linear model based on the various categories
-model1 <- lm(bp_change ~ group_id + age + sex + bmi, data = data)
-summary(model1)
+model1 <- lm(bp_change ~ group_id + age + sex + bmi, data = data) #Creates linear model
+summary(model1) #Provides summary of model
 
 #Principle component analysis (needs data to be modified to numerical)
 data_pca <- data %>%
@@ -57,20 +56,20 @@ data_pca <- data %>%
     sex_num = ifelse(sex == "Male", 1, 0), #Select male to 1 and Female to 0
     group_num = ifelse(group_id == TRUE, 1, 0) #Select drug to 1 and placebo to 0
   ) %>%
-  select(age, bmi, sex_num, group_num)
+  select(age, bmi, sex_num, group_num) #Selected groups for PCA analysis
 
 pca_result <- prcomp(data_pca,    #Run PCA
-                     center = TRUE, 
-                     scale. = TRUE) 
+                     center = TRUE, #Optional
+                     scale. = TRUE) #Generally helpful
 
 summary(pca_result) #Summary of PCA
 
 ggplot(data, aes(x = group_id, y = bp_change, fill = group_id)) + #aes is for aesthetic mapping, uses group to determine the fill
-  geom_boxplot(alpha = 0.5) + #generate boxplot with opacity of 0.5
+  geom_boxplot(alpha = 0.4) + #generate boxplot with opacity of 0.5
   geom_jitter(width = 0.2, alpha = 0.2) +  #adds slight horizontal displacement to points
   theme_minimal() + #minimalistic theme to avoid gridlines
   labs(title = "Change in Blood Pressure After Treatment",   #Title
-       y = "BP Change (mmHg)", x = "Condition (T=drug : F=placebo") +   #Axes labels
+       y = "BP Change (mmHg)", x = "Condition (T=drug : F=placebo)") +   #Axes labels
   scale_fill_manual(values = c("#999999", "#56B4E9")) + #Color values for boxes
   theme(legend.position = "none") #hides legend because groups are already evident
 

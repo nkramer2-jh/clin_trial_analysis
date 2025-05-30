@@ -22,6 +22,9 @@ We simulate a clinical trial with 100 participants randomly assigned to either a
   - Converts categorical variables to numeric
   - Performs PCA on patient characteristics
   - Summarizes and plots explained variance
+- **Visualization using tidyverse (ggplot2):**
+  - Creates boxplots for visualizing blood pressure as a function of group
+  - Allows clear distinction between treatment groups
 
 ## 📁 Files
 
@@ -34,6 +37,7 @@ We simulate a clinical trial with 100 participants randomly assigned to either a
 - **t-test** returns a p-value indicating if the drug effect is statistically significant
 - **Linear model** provides estimates for each predictor’s effect on BP change
 - **PCA summary** shows how much variance is explained by each principal component
+- **ggplot visualization** creates box plots to observe blood pressure statistics for each group
 
 ## 🛠️ Requirements
 
