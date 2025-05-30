@@ -65,4 +65,13 @@ pca_result <- prcomp(data_pca,    #Run PCA
 
 summary(pca_result) #Summary of PCA
 
+ggplot(data, aes(x = group_id, y = bp_change, fill = group_id)) + #aes is for aesthetic mapping, uses group to determine the fill
+  geom_boxplot(alpha = 0.5) + #generate boxplot with opacity of 0.5
+  geom_jitter(width = 0.2, alpha = 0.2) +  #adds slight horizontal displacement to points
+  theme_minimal() + #minimalistic theme to avoid gridlines
+  labs(title = "Change in Blood Pressure After Treatment",   #Title
+       y = "BP Change (mmHg)", x = "Condition (T=drug : F=placebo") +   #Axes labels
+  scale_fill_manual(values = c("#999999", "#56B4E9")) + #Color values for boxes
+  theme(legend.position = "none") #hides legend because groups are already evident
+
 
