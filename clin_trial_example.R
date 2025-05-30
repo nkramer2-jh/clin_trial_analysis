@@ -1,0 +1,68 @@
+# Load libraries
+library(ggplot2)
+library(dplyr)
+library(broom)
+library(car)
+
+set.seed(187) #Random seed
+
+n <- 100 #Number of trials
+
+#Setting up the dataframe
+id <- 1:n #Unique identifier for each individual
+group_id <- rep(c(TRUE, FALSE), each = n/2) #True is drug, False is placebo
+age <- rnorm(n, mean=45, sd=8) #Random ages around 45 yrs old
+sex <- sample(c("Male", "Female"), n, replace = TRUE) #Random male and female
+bmi <- rnorm(n, mean=30, sd=5) #Random bmi around 30
+
+data <- data.frame(id, group_id, age, sex, bmi) #Set up the dataframe
+
+#Generate some random change. The medication should on average decrease bp
+
+# Generate BP changes
+placebo_bp <- rnorm(n/2, mean = 0, sd = 5) #Add deviation for placebo
+drug_bp <- rnorm(n/2, mean = -6, sd = 5) #Decrease mean for bp med data
+
+# Create one vector that combines them
+bp_values <- numeric(nrow(data))  # Preallocate vector of correct length
+bp_values[data$group_id == FALSE] <- placebo_bp #Assigns placebo bp values to bp_values based on corresponding location in dataframe
+bp_values[data$group_id == TRUE] <- drug_bp #Assigns drug bp values to bp_values based on corresponding location in dataframe
+
+# Add to the dataframe
+data$bp_change <- bp_values
+
+head(data)
+
+#Basic statistics on bp_change
+summary_stats <- data %>% #get values from data
+  group_by(group_id) %>% #group the results by drug (TRUE) or placebo (FLASE)
+  summarise(   #summarise the data based on the following parameters
+    bp_delta_mean = mean(bp_change), #take the mean of the bp_change
+    sdev_bp_change = sd(bp_change), #take the standard deviation of the bp_change
+    n = n()) #list the number of replicates for each group
+
+show(summary_stats) #display the summary statistics in the console
+
+#Perform a t-test to identify whether there is a significant difference
+t_result <- t.test(bp_change ~ group_id, data = data) #test if bp difference is significant, generate p value
+show(t_result) #display t-test results
+
+#Linear model based on the various categories
+model1 <- lm(bp_change ~ group_id + age + sex + bmi, data = data)
+summary(model1)
+
+#Principle component analysis (needs data to be modified to numerical)
+data_pca <- data %>%
+  mutate(
+    sex_num = ifelse(sex == "Male", 1, 0), #Select male to 1 and Female to 0
+    group_num = ifelse(group_id == TRUE, 1, 0) #Select drug to 1 and placebo to 0
+  ) %>%
+  select(age, bmi, sex_num, group_num)
+
+pca_result <- prcomp(data_pca,    #Run PCA
+                     center = TRUE, 
+                     scale. = TRUE) 
+
+summary(pca_result) #Summary of PCA
+
+
