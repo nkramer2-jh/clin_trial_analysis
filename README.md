@@ -18,6 +18,7 @@ We simulate a clinical trial with 100 participants randomly assigned to either a
   - Group summary statistics
   - Two-sample t-test to compare blood pressure change between groups
   - Linear regression modeling (`lm()`) to evaluate the influence of group, age, sex, and BMI
+  - Multicollinearity test 
 - **Principal Component Analysis (PCA):**
   - Converts categorical variables to numeric
   - Performs PCA on patient characteristics
@@ -37,6 +38,7 @@ We simulate a clinical trial with 100 participants randomly assigned to either a
 - **t-test** returns a p-value indicating if the drug effect is statistically significant
 - **Linear model** provides estimates for each predictor’s effect on BP change
 - **PCA summary** shows how much variance is explained by each principal component
+- **Multicollinearity** shows how much the variance of the regression coefficient is affected due to correlated predictors 
 - **ggplot visualization** creates box plots to observe blood pressure statistics for each group
 
 ## 🛠️ Requirements

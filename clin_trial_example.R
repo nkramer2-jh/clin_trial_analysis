@@ -4,9 +4,9 @@ library(dplyr)
 library(broom)
 library(car)
 
-set.seed(187) #Random seed
+set.seed(123) #Random seed
 
-n <- 100 #Number of trials
+n <- 200 #Number of trials
 
 #Setting up the dataframe
 id <- 1:n #Unique identifier for each individual
@@ -19,9 +19,16 @@ data <- data.frame(id, group_id, age, sex, bmi) #Set up the dataframe
 
 #Generate some random change. The medication should on average decrease bp
 
-# Generate BP changes
-placebo_bp <- rnorm(n/2, mean = 0, sd = 5) #Add deviation for placebo
-drug_bp <- rnorm(n/2, mean = -6, sd = 5) #Decrease mean for bp med data
+# Generate BP changes with slight BMI effect
+bmi_effect <- 0.2  # small effect size (e.g., 0.1 mmHg per BMI unit)
+
+# Subset BMI values by group
+placebo_bmi <- data$bmi[data$group_id == FALSE]
+drug_bmi <- data$bmi[data$group_id == TRUE]
+
+# Add slight BMI-related increase to BP change
+placebo_bp <- rnorm(n/2, mean = 0, sd = 5) + placebo_bmi * bmi_effect
+drug_bp <- rnorm(n/2, mean = -6, sd = 5) + drug_bmi * bmi_effect
 
 # Create one vector that combines them
 bp_values <- numeric(nrow(data))  # Preallocate vector of correct length
@@ -58,11 +65,16 @@ data_pca <- data %>%
   ) %>%
   select(age, bmi, sex_num, group_num) #Selected groups for PCA analysis
 
-pca_result <- prcomp(data_pca,    #Run PCA
+#Run PCA
+pca_result <- prcomp(data_pca,    
                      center = TRUE, #Optional
                      scale. = TRUE) #Generally helpful
 
 summary(pca_result) #Summary of PCA
+
+#Multicollinearity 
+vif_vals <- vif(model1)
+show(vif_vals)
 
 ggplot(data, aes(x = group_id, y = bp_change, fill = group_id)) + #aes is for aesthetic mapping, uses group to determine the fill
   geom_boxplot(alpha = 0.4) + #generate boxplot with opacity of 0.5
