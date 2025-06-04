@@ -4,7 +4,7 @@ This project simulates a randomized controlled clinical trial in R to evaluate t
 
 ## 🧪 Project Description
 
-We simulate a clinical trial with 100 participants randomly assigned to either a drug group or a placebo group. Each participant has associated demographic and health information (age, sex, BMI). We simulate changes in blood pressure and perform statistical tests to evaluate drug efficacy.
+We simulate a clinical trial with 200 participants randomly assigned to either a drug group or a placebo group. Each participant has associated demographic and health information (age, sex, BMI). We simulate changes in blood pressure and perform statistical tests to evaluate drug efficacy.
 
 ## 📊 Features and Methods
 
@@ -26,6 +26,10 @@ We simulate a clinical trial with 100 participants randomly assigned to either a
 - **Visualization using tidyverse (ggplot2):**
   - Creates boxplots for visualizing blood pressure as a function of group
   - Allows clear distinction between treatment groups
+- **Bootstrap Resampling**
+  - Sampled the dataset 1,000 times with replacement.
+  - Calculated the mean difference in blood pressure (`drug - placebo`) for each sample.
+  - Computed a bias-corrected and accelerated (BCa) confidence interval using `boot.ci()`.
 
 ## 📁 Files
 
@@ -40,6 +44,7 @@ We simulate a clinical trial with 100 participants randomly assigned to either a
 - **PCA summary** shows how much variance is explained by each principal component
 - **Multicollinearity** shows how much the variance of the regression coefficient is affected due to correlated predictors 
 - **ggplot visualization** creates box plots to observe blood pressure statistics for each group
+- **Bootsrap Resampling** uses non-parametric bootstrap resampling (with replacement) to estimate the confidence interval for blood pressure reduction between groups.
 
 ## 🛠️ Requirements
 
@@ -49,9 +54,10 @@ We simulate a clinical trial with 100 participants randomly assigned to either a
   - `dplyr`
   - `broom`
   - `car`
+  - `boot`
 
 Install missing packages using:
 
 ```r
-install.packages(c("ggplot2", "dplyr", "broom", "car"))
+install.packages(c("ggplot2", "dplyr", "broom", "car", "boot"))
 

@@ -3,6 +3,7 @@ library(ggplot2)
 library(dplyr)
 library(broom)
 library(car)
+library(boot)
 
 set.seed(123) #Random seed
 
@@ -85,4 +86,18 @@ ggplot(data, aes(x = group_id, y = bp_change, fill = group_id)) + #aes is for ae
   scale_fill_manual(values = c("#999999", "#56B4E9")) + #Color values for boxes
   theme(legend.position = "none") #hides legend because groups are already evident
 
+#Examine with BMI modifies the drug's effect
+model_interact <- lm(bp_change ~ group_id * bmi + age + sex, data = data) #linear model with group_id:bmi included
+summary(model_interact) #summarize the statistics
+
+#Bootstrap test to estimate sampling distribution
+boot_mean <- function(data, indices) { #function to determine mean bp change between groups
+  d <- data[indices, ] #samples with replacement using the bootstrap indices
+  #Calculates the diff in average BP change between groups within bootstrapped sample.
+  return(mean(d$bp_change[d$group_id == TRUE]) - 
+           mean(d$bp_change[d$group_id == FALSE]))
+}
+
+results <- boot(data = data, statistic = boot_mean, R = 1000) #Performs the bootstrapping
+boot.ci(results, type = "bca") #Calculates the bootstrap confidence interval. In this case, it is statistically significant
 
